@@ -1,0 +1,94 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>like</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container">
+      <h2 class="text-center mt-4 mb-4">perseus-like proto</h2>
+      <div class="card">
+        <div class="card-header">
+          <div class="row">
+            <div class="col-md-3 text-right"><b>total rows from sql - <span id="total_data"></span></b></div>
+            <div class="col-md-3">
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>id</th>
+                <th>word</th>
+                <th>lemma</th>
+                <th>pos</th>
+                <th>features</th>
+              </tr>
+            </thead>
+            <tbody id="post_data"></tbody>
+          </table>
+        </div>
+      </div>
+      
+    </div>
+</body>
+</html>
+
+<script>
+
+load_data();
+
+function load_data(query = '')
+{
+  var form_data = new FormData();
+
+  form_data.append('query', query);
+
+  var ajax_request = new XMLHttpRequest();
+
+  ajax_request.open('POST', 'sqlquery.php');
+
+  ajax_request.send(form_data);
+
+  console.log("POST sent");
+
+  ajax_request.onreadystatechange = function()
+  {
+    if(ajax_request.readyState == 4 && ajax_request.status == 200)
+    {
+      console.log("JSON recieved");
+      //console.log(ajax_request.responseText);
+
+      var response = JSON.parse(ajax_request.responseText);
+
+      var html = '';
+
+      if(response.length > 0)
+      {
+        for(var i = 0; i < response.length; i++)
+        {
+          html += '<tr>';
+          html += '<td>'+response[i].id+'</td>';
+          html += '<td>'+response[i].word+'</td>';
+          html += '<td>'+response[i].lemma+'</td>';
+          html += '<td>'+response[i].pos+'</td>';
+          html += '<td>'+response[i].features+'</td>';
+          html += '</tr>';
+        }
+      }
+      else
+      {
+        html += '<tr><td colspan="5" class="text-center">no data recieved</td></tr>';
+      }
+      document.getElementById('post_data').innerHTML = html;
+      document.getElementById('total_data').innerHTML = response.length;
+    }
+  }
+}
+  
+
+</script>
