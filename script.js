@@ -1,3 +1,5 @@
+var response = 0;
+
 load_data();
 
 function load_data(query = '')
@@ -19,32 +21,44 @@ function load_data(query = '')
     if(ajax_request.readyState == 4 && ajax_request.status == 200)
     {
       console.log("JSON recieved");
-      //console.log(ajax_request.responseText);
-
-      var response = JSON.parse(ajax_request.responseText);
-
+      response = JSON.parse(ajax_request.responseText);
       var html = '';
 
       if(response.length > 0)
       {
+          html += '<p>';
         for(var i = 0; i < response.length; i++)
         {
-          html += '<tr>';
-          html += '<td>'+response[i].id+'</td>';
-          html += '<td>'+response[i].word+'</td>';
-          html += '<td>'+response[i].lemma+'</td>';
-          html += '<td>'+response[i].pos+'</td>';
-          html += '<td>'+response[i].features+'</td>';
-          html += '</tr>';
+          html += '<span id= '+i+'>';
+          if (response[i].word != '.' && response[i].word != ','){
+            html += " "+response[i].word;
+          }else{
+            html += response[i].word;
+          }
+          html += '</span>';
         }
+          html += '</p>';
       }
-      else
-      {
-        html += '<tr><td colspan="5" class="text-center">no data recieved</td></tr>';
-      }
-      document.getElementById('post_data').innerHTML = html;
-      document.getElementById('total_data').innerHTML = response.length;
+      document.getElementById('main-container').innerHTML = html;
+      console.log("DOM loaded")
     }
   }
 }
-  
+
+document.body.addEventListener("mousedown",function(e) {
+    //display the lemma of the word that is clicked on in a table on the right
+    right = "<table>" 
+    right += "<tr><td><b>"+response[e.target.id].lemma+"</b></td></tr>";
+    right += "<tr><td>"+response[e.target.id].pos+"</td></tr>";
+    
+    features = response[e.target.id].features.replace("{","").replace("}","").split(',');
+    for (var i = 0; i < features.length; i++){
+      right += "<tr><td>"+features[i]+"<td></tr>";
+    }
+    right += "</table>" 
+    document.getElementById("right-container").innerHTML = right;
+},false);
+
+function diplay_properties(word_id){
+
+}
