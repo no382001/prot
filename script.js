@@ -26,7 +26,7 @@ function load_data(query = '')
 
       if(response.length > 0)
       {
-          html += '<p>';
+          html += '<p class="main-text">';
         for(var i = 0; i < response.length; i++)
         {
           html += '<span id= '+i+'>';
@@ -45,9 +45,10 @@ function load_data(query = '')
   }
 }
 
-document.body.addEventListener("mousedown",function(e) {
+var mainc = document.getElementById("main-container");
+mainc.addEventListener("mousedown",function(e) {
     //display the lemma of the word that is clicked on in a table on the right
-    right = "<table>" 
+    right = "<table class='right-text'>" 
     right += "<tr><td><b>"+response[e.target.id].lemma+"</b></td></tr>";
     right += "<tr><td>"+response[e.target.id].pos+"</td></tr>";
     
@@ -59,6 +60,27 @@ document.body.addEventListener("mousedown",function(e) {
     document.getElementById("right-container").innerHTML = right;
 },false);
 
-function diplay_properties(word_id){
 
-}
+
+const moveElm = document.getElementById("right-container");
+var X;
+var Y;
+var mouse_down = false;
+
+moveElm.addEventListener("mousemove",function(e){
+  X = e.x;
+  Y = e.y;
+  if(mouse_down){
+    moveElm.style.cssText = "left:"+(X-(230/2))+"px; top:"+(Y-20)+"px";
+  }
+});
+
+moveElm.addEventListener("mousedown",function(e){
+  mouse_down = true;
+  moveElm.style.cssText = "left:"+(X-(230/2))+"px; top:"+(Y-20)+"px";
+});
+
+moveElm.addEventListener("mouseup",function(){
+  mouse_down = false;
+});
+
